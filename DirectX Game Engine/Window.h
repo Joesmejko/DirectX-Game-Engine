@@ -4,10 +4,10 @@
 class Window
 {
 public:
-	//initialize the window
+	//Ínitialize window
 	bool init();
 	bool broadcast();
-	//Release the window
+	//Release window
 	bool release();
 	bool isRun();
 
@@ -15,8 +15,8 @@ public:
 	void setHWND(HWND hwnd);
 
 	//EVENTS
-	virtual void onCreate()=0;
-	virtual void onUpdate()=0;
+	virtual void onCreate();
+	virtual void onUpdate();
 	virtual void onDestroy();
 protected:
 	HWND m_hwnd;
