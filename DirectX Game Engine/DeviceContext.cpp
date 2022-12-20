@@ -21,4 +21,3 @@ bool DeviceContext::release()
 	delete this;
 	return true;
 }
-//7:32

@@ -3,6 +3,7 @@
 
 class SwapChain;
 class DeviceContext;
+class VertexBuffer;
 
 class GraphicsEngine
 {
@@ -31,4 +32,5 @@ private:
 
 private:
 	friend class SwapChain;
+	friend class VertexBuffer;
 };
