@@ -40,13 +40,16 @@ bool VertexBuffer::load(void* list_verticies,UINT size_vertex, UINT size_list, v
     return true;
 }
 
+UINT VertexBuffer::getSizeVertexList()
+{
+    return this->m_size_list;
+}
+
 bool VertexBuffer::release()
 {
     m_layout->Release();
     m_buffer->Release();
+    delete this;
 
     return true;
 }
-
-
-//17:57 Draw a triangle
