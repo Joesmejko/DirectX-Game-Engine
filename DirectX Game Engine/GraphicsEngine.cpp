@@ -1,9 +1,11 @@
 #include "GraphicsEngine.h"
 #include "SwapChain.h"
 #include "DeviceContext.h"
+#include "ConstantBuffer.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
+
 #include <d3dcompiler.h>
 
 bool GraphicsEngine::init()
@@ -14,12 +16,14 @@ bool GraphicsEngine::init()
 		D3D_DRIVER_TYPE_WARP,
 		D3D_DRIVER_TYPE_REFERENCE
 	};
+
 	UINT num_driver_types = ARRAYSIZE(driver_types);
 
 	D3D_FEATURE_LEVEL feature_levels[] =
 	{
 		D3D_FEATURE_LEVEL_11_0
 	};
+
 	UINT num_feature_levels = ARRAYSIZE(feature_levels);
 
 	HRESULT res = 0;
@@ -33,6 +37,7 @@ bool GraphicsEngine::init()
 			break;
 		++driver_type_index;
 	}
+
 	if (FAILED(res))
 	{
 		return false;
@@ -62,8 +67,8 @@ bool GraphicsEngine::release()
 
 	m_imm_device_context->release();
 
-
 	m_d3d_device->Release();
+
 	return true;
 }
 
@@ -83,6 +88,11 @@ VertexBuffer* GraphicsEngine::createVertexBuffer()
 	return new VertexBuffer();
 }
 
+ConstantBuffer* GraphicsEngine::createConstantBuffer()
+{
+	return new ConstantBuffer();
+}
+
 VertexShader* GraphicsEngine::createVertexShader(const void* shader_byte_code, size_t byte_code_size)
 {
 	VertexShader* vs = new VertexShader();
@@ -92,6 +102,7 @@ VertexShader* GraphicsEngine::createVertexShader(const void* shader_byte_code, s
 		vs->release();
 		return nullptr;
 	}
+
 	return vs;
 }
 
@@ -104,6 +115,7 @@ PixelShader* GraphicsEngine::createPixelShader(const void* shader_byte_code, siz
 		ps->release();
 		return nullptr;
 	}
+
 	return ps;
 }
 
@@ -119,7 +131,6 @@ bool GraphicsEngine::compileVertexShader(const wchar_t* file_name,const char* en
 	*shader_byte_code = m_blob->GetBufferPointer();
 	*byte_code_size = m_blob->GetBufferSize();
 
-
 	return true;
 }
 
@@ -134,7 +145,6 @@ bool GraphicsEngine::compilePixelShader(const wchar_t* file_name, const char* en
 	*shader_byte_code = m_blob->GetBufferPointer();
 	*byte_code_size = m_blob->GetBufferSize();
 
-
 	return true;
 }
 
@@ -148,7 +158,3 @@ GraphicsEngine* GraphicsEngine::get()
 	static GraphicsEngine engine;
 	return &engine;
 }
-
-
-//C++ 3D Game Tutorial 7: Creating 3D Engine - Vertex Shader
-//17:11

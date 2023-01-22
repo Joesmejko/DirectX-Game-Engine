@@ -66,7 +66,7 @@ bool Window::init()
 	if (!m_hwnd)
 		return false;
 
-	//SHOW UP WINDOW
+	//Zobrazit okno
 	::ShowWindow(m_hwnd, SW_SHOW);
 	::UpdateWindow(m_hwnd);
 
