@@ -138,6 +138,6 @@ void AppWindow::onDestroy()
 
 
 
-//Tutorial part 10
+//Tutorial part 10/ 32:30
 //Unitialized cc.m_time
 //Not working properly
