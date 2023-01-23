@@ -1,5 +1,7 @@
 #include "AppWindow.h"
 #include <windows.h>
+#include "Vector3D.h"
+#include "Matrix4x4.h"
 
 struct vec3
 {
@@ -8,17 +10,43 @@ struct vec3
 
 struct vertex
 {
-	vec3 position;
-	vec3 position1;
-	vec3 color;
-	vec3 color1;
+	Vector3D position;
+	Vector3D position1;
+	Vector3D color;
+	Vector3D color1;
 };
 
 __declspec(align(16))
 struct constant
 {
-	float m_angle;
+	Matrix4x4 m_world;
+	Matrix4x4 m_view;
+	Matrix4x4 m_proj;
+	unsigned int m_time;
 };
+
+void AppWindow::updateQuadPosition()
+{
+	constant cc;
+	cc.m_time = ::GetTickCount();
+
+	m_delta_pos += m_delta_time * 1.0f;
+
+	if (m_delta_pos > 1.0f)
+		m_delta_pos = 0;
+
+	cc.m_world.setTranslation(Vector3D::lerp(Vector3D(2,2,0),Vector3D(2,2,0),m_delta_pos));
+	cc.m_view.setIdentity();
+	cc.m_proj.setOrthoLH
+	(
+		(this->getClientWindowRect().right - this->getClientWindowRect().left) / 400.0f,
+		(this->getClientWindowRect().bottom - this->getClientWindowRect().top) / 400.0f,
+		-4.0f,
+		4.0f
+	);
+
+	m_cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
+}
 
 void AppWindow::onCreate()
 {
@@ -32,10 +60,10 @@ void AppWindow::onCreate()
 	vertex list[] =
 	{
 		//X Y Z
-		{-0.5f, -0.5f, 0.0f,	-0.32f, -0.11f, 0.0f,	1,0,0,	1,0,0},//POS1
-		{-0.5f, 0.5f, 0.0f,		-0.11f, 0.78f, 0.0f,	0,1,0,	0.1,0.8,0.6},//POS2
-		{0.5f, -0.5f, 0.0f,		 0.75f, -0.73f, 0.0f,	0,0,1,	1,0.6,0.8},//POS3
-		{0.5f, 0.5f, 0.0f,		 0.88f, 0.77f, 0.0f,	1,1,0,	0,0.2,0.3},//POS4
+		{Vector3D(-0.5f, -0.5f, 0.0f),		Vector3D(-0.32f, -0.11f, 0.0f),	Vector3D(1,0,0),	Vector3D(1,0,0)},//POS1
+		{Vector3D(-0.5f, 0.5f, 0.0f),		Vector3D(-0.11f, 0.78f, 0.0f),	Vector3D(0,1,0),	Vector3D(0.1,0.8,0.6)},//POS2
+		{Vector3D(0.5f, -0.5f, 0.0f),		Vector3D(0.75f, -0.73f, 0.0f),	Vector3D(0,0,1),	Vector3D(1,0.6,0.8)},//POS3
+		{Vector3D(0.5f, 0.5f, 0.0f),		Vector3D(0.88f, 0.77f, 0.0f),	Vector3D(1,1,0),	Vector3D(0,0.2,0.3)},//POS4
 	};
 
 	m_vb = GraphicsEngine::get()->createVertexBuffer();
@@ -52,13 +80,12 @@ void AppWindow::onCreate()
 
 	GraphicsEngine::get()->releaseCompiledShader();
 
-
 	GraphicsEngine::get()->compilePixelShader(L"PixelShader.hlsl", "psmain", &shader_byte_code, &size_shader);
 	m_ps = GraphicsEngine::get()->createPixelShader(shader_byte_code, size_shader);
 	GraphicsEngine::get()->releaseCompiledShader();
 
 	constant cc;
-	cc.m_angle = 0;
+	cc.m_time = 0;
 
 	m_cb = GraphicsEngine::get()->createConstantBuffer();
 	m_cb->load(&cc, sizeof(constant));
@@ -75,17 +102,9 @@ void AppWindow::onUpdate()
 	RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
-	unsigned long new_time = 0;
-	if (m_old_time)
-		new_time = ::GetTickCount() - m_old_time;
-	m_delta_time = new_time / 1000.0f;
-	m_old_time = ::GetTickCount();
+	
+	updateQuadPosition();
 
-	m_angle += 1.57f * m_delta_time;
-	constant cc;
-	cc.m_angle = m_angle;
-
-	m_cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
 
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vs, m_cb);
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_ps, m_cb);
@@ -100,6 +119,11 @@ void AppWindow::onUpdate()
 	//Draw
 	GraphicsEngine::get()->getImmediateDeviceContext()->drawTriangleStrip(m_vb->getSizeVertexList(), 0);
 	m_swap_chain->present(true);
+
+	m_old_delta = m_new_delta;
+	m_new_delta = ::GetTickCount64();
+
+	m_delta_time = (m_old_delta) ? ((m_new_delta - m_old_delta) / 1000.0f) : 0;
 }
 
 void AppWindow::onDestroy()
@@ -111,3 +135,9 @@ void AppWindow::onDestroy()
 	m_ps->release();
 	GraphicsEngine::get()->release();
 }
+
+
+
+//Tutorial part 10
+//Unitialized cc.m_time
+//Not working properly

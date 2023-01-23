@@ -9,8 +9,6 @@ int main()
 		{
 			app.broadcast();
 		}
-
 	}
-
 	return 0;
 }
