@@ -26,6 +26,32 @@ public:
 		m_mat[3][2] = translation.m_z;
 	}
 
+	void operator *=(const Matrix4x4& matrix)
+	{
+		Matrix4x4 out;
+
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				out.m_mat[i][j] = 
+					m_mat[i][0] * matrix.m_mat[0][j] + m_mat[i][1] * matrix.m_mat[1][j] + 
+					m_mat[i][2] * matrix.m_mat[2][j] + m_mat[i][3] * matrix.m_mat[3][j];
+			}
+
+		}
+
+		::memcpy(m_mat, out.m_mat, sizeof(float) * 16);
+	}
+
+	void setScale(const Vector3D& scale)
+	{
+		setIdentity();
+		m_mat[0][0] = scale.m_x;
+		m_mat[1][1] = scale.m_y;
+		m_mat[2][2] = scale.m_z;
+	}
+
 	void setOrthoLH(float width, float height, float near_plane, float far_plane)
 	{
 		setIdentity();
