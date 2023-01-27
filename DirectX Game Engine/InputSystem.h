@@ -2,6 +2,7 @@
 #include "InputListener.h"
 #include <map>
 
+
 class InputSystem
 {
 public:
@@ -13,5 +14,6 @@ public:
 private:
 	std::map<InputListener*, InputListener*>m_map_listeners;
 	unsigned char m_keys_state[256] = {};
+	unsigned char m_old_keys_state[256] = {};
 };
 

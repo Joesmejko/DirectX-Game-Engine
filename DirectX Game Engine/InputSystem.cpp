@@ -21,11 +21,22 @@ void InputSystem::Update()
 			}
 			else // Key is up
 			{
+				if (m_keys_state[i] != m_old_keys_state[i])
+				{
+					std::map<InputListener*, InputListener*>::iterator it = m_map_listeners.begin();
 
+					while (it != m_map_listeners.end())
+					{
+						it->second->onKeyUp(i);
+						++it;
+					}
+				}
 
 			}
 		}
 	}
+	// store current key state to old key state
+	::memcpy(m_old_keys_state, m_keys_state, sizeof(unsigned char) * 256);
 }
 
 void InputSystem::addListener(InputListener* listener)
