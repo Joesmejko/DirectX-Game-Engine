@@ -8,18 +8,33 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
 	case WM_CREATE:
 	{
-		//Event ked sa okno zapne
+		//Event when window is created
 		Window* window = (Window*)((LPCREATESTRUCT)lparam)->lpCreateParams;
-		// .. and then stored for later lookup
 		SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)window);
 		window->setHWND(hwnd);
 		window->onCreate();
 		break;
 	}
 
+	case WM_SETFOCUS:
+	{
+		//Event when window is in focus
+		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		window->onFocus();
+		break;
+	}
+
+	case WM_KILLFOCUS:
+	{
+		//Event when window is in out of focus
+		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		window->onKillFocus();
+		break;
+	}
+
 	case WM_DESTROY:
 	{
-		//Event ked sa okno znièí
+		//Event when window is destroyed
 		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		window->onDestroy();
 		::PostQuitMessage(0);
@@ -59,18 +74,18 @@ bool Window::init()
 	if (!window)
 		window = this;
 
-	//Vytvorenie okna
+	//Window creation
 	m_hwnd =::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"MyWindowClass", L"DirectX Application", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, this);
 	
-	//Pokial vytvorenie zlyha return false
+	//If window creation failed return false
 	if (!m_hwnd)
 		return false;
 
-	//Zobrazit okno
+	//Show up window
 	::ShowWindow(m_hwnd, SW_SHOW);
 	::UpdateWindow(m_hwnd);
 
-	//nastavit bool na to ze okno sa zaplo a bezi 
+	//Set bool to true when window is running
 	m_is_run = true;
 	return true;
 }
@@ -130,4 +145,12 @@ void Window::onUpdate()
 void Window::onDestroy()
 {
 	m_is_run = false;
+}
+
+void Window::onFocus()
+{
+}
+
+void Window::onKillFocus()
+{
 }
