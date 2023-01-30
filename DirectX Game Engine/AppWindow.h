@@ -14,7 +14,7 @@ class AppWindow : public Window, public InputListener
 {
 public:
 
-	void updateQuadPosition();
+	void update();
 
 	// Inherited via Window
 	virtual void onCreate() override;

@@ -122,6 +122,10 @@
     <ClInclude Include="InputListener.h">
       <Filter>GameEngine\InputSystem</Filter>
     </ClInclude>
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="Vector4D.h">
+      <Filter>GameEngine\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">

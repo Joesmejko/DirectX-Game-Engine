@@ -25,7 +25,7 @@ struct constant
 	unsigned int m_time;
 };
 
-void AppWindow::updateQuadPosition()
+void AppWindow::update()
 {
 	constant cc;
 	cc.m_time = ::GetTickCount64();
@@ -42,28 +42,51 @@ void AppWindow::updateQuadPosition()
 	//temp.setTranslation(Vector3D::lerp(Vector3D(-1.5, -1.5, 0), Vector3D(1.5, 1.5, 0), m_delta_pos));
 	//cc.m_world *= temp;
 
-	cc.m_world.setScale(Vector3D(m_scale_cube, m_scale_cube, m_scale_cube));
+	//cc.m_world.setScale(Vector3D(m_scale_cube, m_scale_cube, m_scale_cube));
 
-	temp.setIdentity();
-	temp.setRotationZ(0.0f);
-	cc.m_world *= temp;
+	//temp.setIdentity();
+	//temp.setRotationZ(0.0f);
+	//cc.m_world *= temp;
+
+	//temp.setIdentity();
+	//temp.setRotationX(m_rot_x);
+	//cc.m_world *= temp;
+
+	//temp.setIdentity();
+	//temp.setRotationY(m_rot_y);
+	//cc.m_world *= temp;
+
+	cc.m_world.setIdentity();
+
+	Matrix4x4 world_cam;
+	world_cam.setIdentity();
 
 	temp.setIdentity();
 	temp.setRotationX(m_rot_x);
-	cc.m_world *= temp;
+	world_cam *= temp;
 
 	temp.setIdentity();
 	temp.setRotationY(m_rot_y);
-	cc.m_world *= temp;
+	world_cam *= temp;
 
-	cc.m_view.setIdentity();
-	cc.m_proj.setOrthoLH
+	world_cam.setTranslation(Vector3D(0, 0, -2));
+
+	world_cam.inverse();
+
+
+	cc.m_view = world_cam;
+	/*cc.m_proj.setOrthoLH
 	(
 		(this->getClientWindowRect().right - this->getClientWindowRect().left) / 400.0f,
 		(this->getClientWindowRect().bottom - this->getClientWindowRect().top) / 400.0f,
 		-4.0f,
 		4.0f
-	);
+	);*/
+
+	int width = (this->getClientWindowRect().right - this->getClientWindowRect().left);
+	int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top);
+
+	cc.m_proj.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.0f);
 
 	m_cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
 }
@@ -164,7 +187,7 @@ void AppWindow::onUpdate()
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
 	
-	updateQuadPosition();
+	update();
 
 
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vs, m_cb);
@@ -239,8 +262,8 @@ void AppWindow::onKeyUp(int key)
 
 void AppWindow::onMouseMove(const Point& delta_mouse_pos)
 {
-	m_rot_x -= delta_mouse_pos.m_y * m_delta_time;
-	m_rot_y -= delta_mouse_pos.m_x * m_delta_time;
+	m_rot_x -= delta_mouse_pos.m_y * m_delta_time*0.1f;
+	m_rot_y -= delta_mouse_pos.m_x * m_delta_time*0.1f;
 }
 
 void AppWindow::onLeftMouseDown(const Point& mouse_pos)
