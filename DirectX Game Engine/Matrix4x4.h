@@ -99,6 +99,21 @@ public:
 		::memcpy(m_mat, matrix.m_mat, sizeof(float) * 16);
 	}
 
+	Vector3D getZdirection()
+	{
+		return Vector3D(m_mat[2][0], m_mat[2][1], m_mat[2][2]);
+	}
+
+	Vector3D getXdirection()
+	{
+		return Vector3D(m_mat[0][0], m_mat[0][1], m_mat[0][2]);
+	}
+
+	Vector3D getTranslation()
+	{
+		return Vector3D(m_mat[3][0], m_mat[3][1], m_mat[3][2]);
+	}
+
 	void setScale(const Vector3D& scale)
 	{
 		m_mat[0][0] = scale.m_x;
