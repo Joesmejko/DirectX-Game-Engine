@@ -1,8 +1,9 @@
 #pragma once
 #include <d3d11.h>
+
 #include "Prerequisites.h"
 
-class GraphicsEngine
+class RenderSystem
 {
 public:
 	//Initialize the GraphicsEngine and DirectX 11 Device
@@ -22,8 +23,6 @@ public:
 	bool compilePixelShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size);
 
 	void releaseCompiledShader();
-public:
-	static GraphicsEngine* get();
 private:
 	DeviceContext* m_imm_device_context;
 private:

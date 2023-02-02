@@ -173,5 +173,3 @@ public:
 	float m_mat[4][4] = {};
 
 };
-
-//part 14, 24:17

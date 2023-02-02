@@ -1,7 +1,7 @@
 #include "IndexBuffer.h"
 #include "GraphicsEngine.h"
 
-IndexBuffer::IndexBuffer() : m_buffer(0)
+IndexBuffer::IndexBuffer() : m_buffer(0), m_system(system)
 {
 }
 
