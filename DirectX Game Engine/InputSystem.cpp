@@ -106,7 +106,3 @@ InputSystem* InputSystem::get()
 	static InputSystem system;
 	return &system;
 }
-
-
-
-// onKeyDown event nefunguje video part 12, 15:43

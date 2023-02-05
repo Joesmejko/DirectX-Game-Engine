@@ -23,4 +23,3 @@ private:
 	Point m_old_mouse_pos;
 	bool m_first_time = true;
 };
-
