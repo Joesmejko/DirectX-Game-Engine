@@ -6,13 +6,10 @@ class DeviceContext;
 class SwapChain
 {
 public:
-	SwapChain();
+	SwapChain(RenderSystem* system);
 	//Initialize SwapChain for window
 	bool init(HWND hwnd, UINT width, UINT height);
-
-
 	bool present(bool vsync);
-
 	//Release swap chain
 	bool release();
 private:

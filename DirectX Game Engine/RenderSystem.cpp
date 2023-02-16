@@ -44,7 +44,7 @@ bool RenderSystem::init()
 		return false;
 	}
 
-	m_imm_device_context = new DeviceContext(m_imm_context);
+	m_imm_device_context = new DeviceContext(m_imm_context, this);
 
 	m_d3d_device->QueryInterface(__uuidof(IDXGIDevice), (void**)&m_dxgi_device);
 	m_dxgi_device->GetParent(__uuidof(IDXGIAdapter), (void**)&m_dxgi_adapter);
@@ -76,7 +76,7 @@ bool RenderSystem::release()
 
 SwapChain* RenderSystem::createSwapChain()
 {
-	return new SwapChain();
+	return new SwapChain(this);
 }
 
 DeviceContext* RenderSystem::getImmediateDeviceContext()
@@ -86,22 +86,22 @@ DeviceContext* RenderSystem::getImmediateDeviceContext()
 
 VertexBuffer* RenderSystem::createVertexBuffer()
 {
-	return new VertexBuffer();
+	return new VertexBuffer(this);
 }
 
 IndexBuffer* RenderSystem::createIndexBuffer()
 {
-	return new IndexBuffer;
+	return new IndexBuffer(this);
 }
 
 ConstantBuffer* RenderSystem::createConstantBuffer()
 {
-	return new ConstantBuffer();
+	return new ConstantBuffer(this);
 }
 
 VertexShader* RenderSystem::createVertexShader(const void* shader_byte_code, size_t byte_code_size)
 {
-	VertexShader* vs = new VertexShader();
+	VertexShader* vs = new VertexShader(this);
 
 	if (!vs->init(shader_byte_code, byte_code_size))
 	{
@@ -114,7 +114,7 @@ VertexShader* RenderSystem::createVertexShader(const void* shader_byte_code, siz
 
 PixelShader* RenderSystem::createPixelShader(const void* shader_byte_code, size_t byte_code_size)
 {
-	PixelShader* ps = new PixelShader();
+	PixelShader* ps = new PixelShader(this);
 
 	if (!ps->init(shader_byte_code, byte_code_size))
 	{

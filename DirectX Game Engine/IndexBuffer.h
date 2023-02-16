@@ -7,7 +7,7 @@ class DeviceContext;
 class IndexBuffer
 {
 public:
-	IndexBuffer();
+	IndexBuffer(RenderSystem* system);
 	bool load(void* list_indices, UINT size_list);
 	UINT getSizeIndexList();
 	bool release();

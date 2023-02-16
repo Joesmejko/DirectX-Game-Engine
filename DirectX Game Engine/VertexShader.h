@@ -8,6 +8,7 @@ class DeviceContext;
 class VertexShader
 {
 public:
+	VertexShader(RenderSystem* system);
 	void release();
 private:
 	bool init(const void* shader_byte_code, size_t byte_code_size);
@@ -15,7 +16,7 @@ private:
 	ID3D11VertexShader* m_vs;
 	RenderSystem* m_system = nullptr;
 private:
-	friend class GraphicsEngine;
+	friend class RenderSystem;
 	friend class DeviceContext;
 };
 

@@ -7,6 +7,7 @@ class DeviceContext;
 class ConstantBuffer
 {
 public:
+	ConstantBuffer(RenderSystem * system);
 	bool load(void* buffer, UINT size_buffer);
 	void update(DeviceContext* context,void* buffer);
 	bool release();
