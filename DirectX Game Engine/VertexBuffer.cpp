@@ -1,5 +1,6 @@
 #include "VertexBuffer.h"
 #include "RenderSystem.h"
+#include <exception>
 
 VertexBuffer::VertexBuffer(RenderSystem* system): m_system(system), m_layout(0), m_buffer(0)
 {

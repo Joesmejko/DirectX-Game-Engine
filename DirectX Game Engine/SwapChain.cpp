@@ -1,11 +1,8 @@
 #include "SwapChain.h"
 #include "RenderSystem.h"
+#include <exception>
 
-SwapChain::SwapChain(RenderSystem* system) : m_system(system)
-{
-}
-
-bool SwapChain::init(HWND hwnd, UINT width, UINT height)
+SwapChain::SwapChain(HWND hwnd, UINT width, UINT height, RenderSystem* system) : m_system(system)
 {
 	ID3D11Device* device = m_system->m_d3d_device;
 
@@ -28,7 +25,7 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 
 	if (FAILED(hr))
 	{
-		return false;
+		throw std::exception("SwapChain not created succesfully");
 	}
 
 	//Get the back buffer color and create its render target view
@@ -37,7 +34,7 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 
 	if (FAILED(hr))
 	{
-		return false;
+		throw std::exception("SwapChain not created succesfully");
 	}
 
 	hr = device->CreateRenderTargetView(buffer, NULL, &m_rtv);
@@ -45,10 +42,8 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 
 	if (FAILED(hr))
 	{
-		return false;
+		throw std::exception("SwapChain not created succesfully");
 	}
-
-	return true;
 }
 
 bool SwapChain::present(bool vsync)
@@ -58,9 +53,9 @@ bool SwapChain::present(bool vsync)
 	return true;
 }
 
-bool SwapChain::release()
+SwapChain::~SwapChain()
 {
 	m_swap_chain->Release();
-	delete this;
-	return true;
 }
+
+//Part 15 34:00

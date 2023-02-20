@@ -1,5 +1,6 @@
 #include "VertexShader.h"
 #include "RenderSystem.h"
+#include <exception>
 
 VertexShader::VertexShader(RenderSystem* system): m_system(system)
 {

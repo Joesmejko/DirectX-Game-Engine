@@ -6,12 +6,10 @@ class DeviceContext;
 class SwapChain
 {
 public:
-	SwapChain(RenderSystem* system);
+	SwapChain(HWND hwnd, UINT width, UINT height, RenderSystem* system);
 	//Initialize SwapChain for window
-	bool init(HWND hwnd, UINT width, UINT height);
 	bool present(bool vsync);
-	//Release swap chain
-	bool release();
+	~SwapChain();
 private:
 	IDXGISwapChain* m_swap_chain;
 	ID3D11RenderTargetView* m_rtv;

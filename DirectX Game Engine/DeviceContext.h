@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d11.h>
 #include "Prerequisites.h"
+#include <exception>
 
 class DeviceContext
 {
@@ -23,7 +24,7 @@ public:
 	void setConstantBuffer(VertexShader* vertex_shader, ConstantBuffer* buffer);
 	void setConstantBuffer(PixelShader* pixel_shader, ConstantBuffer* buffer);
 
-	bool release();
+	~DeviceContext();
 private:
 	ID3D11DeviceContext* m_device_context;
 	RenderSystem* m_system = nullptr;
