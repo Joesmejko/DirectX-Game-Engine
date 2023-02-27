@@ -55,6 +55,7 @@ bool SwapChain::present(bool vsync)
 
 SwapChain::~SwapChain()
 {
+	m_rtv->Release();
 	m_swap_chain->Release();
 }
 

@@ -66,7 +66,7 @@ bool RenderSystem::release()
 	m_dxgi_adapter->Release();
 	m_dxgi_factory->Release();
 
-	m_imm_device_context->release();
+	delete m_imm_device_context;
 
 	m_d3d_device->Release();
 
@@ -74,9 +74,15 @@ bool RenderSystem::release()
 }
 
 
-SwapChain* RenderSystem::createSwapChain()
+SwapChain* RenderSystem::createSwapChain(HWND hwnd, UINT width, UINT height)
 {
-	return new SwapChain(this);
+	SwapChain* sc = nullptr;
+	try
+	{
+		sc = new SwapChain(hwnd, width, height, this);
+	}
+	catch (...) {}
+	return sc;
 }
 
 DeviceContext* RenderSystem::getImmediateDeviceContext()
@@ -84,44 +90,58 @@ DeviceContext* RenderSystem::getImmediateDeviceContext()
 	return this->m_imm_device_context;
 }
 
-VertexBuffer* RenderSystem::createVertexBuffer()
+VertexBuffer* RenderSystem::createVertexBuffer(void* list_verticies, UINT size_vertex, UINT size_list, void* shader_byte_code, UINT size_byte_shader)
 {
-	return new VertexBuffer(this);
+	VertexBuffer * vb = nullptr;
+	try
+	{
+		vb = new VertexBuffer(list_verticies, size_vertex, size_list, shader_byte_code, size_byte_shader, this);
+	}
+	catch (...) {}
+	return vb;
 }
 
-IndexBuffer* RenderSystem::createIndexBuffer()
+IndexBuffer* RenderSystem::createIndexBuffer(void* list_indices, UINT size_list)
 {
-	return new IndexBuffer(this);
+	IndexBuffer * ib = nullptr;
+	try
+	{
+		ib = new IndexBuffer(list_indices, size_list, this);
+	}
+	catch (...) {}
+	return ib;
 }
 
-ConstantBuffer* RenderSystem::createConstantBuffer()
+ConstantBuffer* RenderSystem::createConstantBuffer(void* buffer, UINT size_buffer)
 {
-	return new ConstantBuffer(this);
+	ConstantBuffer * cb = nullptr;
+	try
+	{
+		cb = new ConstantBuffer(buffer, size_buffer, this);
+	}
+	catch (...) {}
+	return cb;
 }
 
 VertexShader* RenderSystem::createVertexShader(const void* shader_byte_code, size_t byte_code_size)
 {
-	VertexShader* vs = new VertexShader(this);
-
-	if (!vs->init(shader_byte_code, byte_code_size))
+	VertexShader * vs = nullptr;
+	try
 	{
-		vs->release();
-		return nullptr;
+		vs = new VertexShader(shader_byte_code, byte_code_size, this);
 	}
-
+	catch (...) {}
 	return vs;
 }
 
 PixelShader* RenderSystem::createPixelShader(const void* shader_byte_code, size_t byte_code_size)
 {
-	PixelShader* ps = new PixelShader(this);
-
-	if (!ps->init(shader_byte_code, byte_code_size))
+	PixelShader* ps = nullptr;
+	try
 	{
-		ps->release();
-		return nullptr;
+		ps = new PixelShader(shader_byte_code, byte_code_size, this);
 	}
-
+	catch (...) {}
 	return ps;
 }
 
