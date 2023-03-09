@@ -3,10 +3,13 @@
 
 bool GraphicsEngine::init()
 {
-	m_render_system = new RenderSystem();
-	m_render_system->init();
+	try
+	{
+		m_render_system = new RenderSystem();
+	}
+	catch (...){}
+	
 	return true;
-
 }
 
 
@@ -27,5 +30,3 @@ GraphicsEngine* GraphicsEngine::get()
 	static GraphicsEngine engine;
 	return &engine;
 }
-
-//Part 15, 26:00
