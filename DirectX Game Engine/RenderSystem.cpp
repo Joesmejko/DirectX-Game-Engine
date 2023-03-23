@@ -61,8 +61,6 @@ RenderSystem::~RenderSystem()
 	m_dxgi_factory->Release();
 
 	m_d3d_device->Release();
-
-	return true;
 }
 
 SwapChainPtr RenderSystem::createSwapChain(HWND hwnd, UINT width, UINT height)

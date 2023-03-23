@@ -1,4 +1,5 @@
 #include "Window.h"
+#include <exception>
 
 Window* window = nullptr;
 
@@ -9,18 +10,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_CREATE:
 	{
 		//Event when window is created
-		Window* window = (Window*)((LPCREATESTRUCT)lparam)->lpCreateParams;
-		SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)window);
-		window->setHWND(hwnd);
-		window->onCreate();
 		break;
 	}
 
 	case WM_SETFOCUS:
 	{
-		//Event when window is in focus
+		// Event when the window gets focus
 		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-		window->onFocus();
+		if (window) window->onFocus();
 		break;
 	}
 
@@ -51,7 +48,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 }
 
-bool Window::init()
+Window::Window()
 {
 	WNDCLASSEX wc;
 	wc.cbClsExtra = NULL;
@@ -69,17 +66,19 @@ bool Window::init()
 
 
 	if (!::RegisterClassEx(&wc)) //Pokial registracia classy zlyha, funkcia vrati false
-		return false;
+		throw std::exception("Window not created successfully");
 
 	if (!window)
 		window = this;
 
 	//Window creation
-	m_hwnd =::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"MyWindowClass", L"DirectX Application", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, this);
-	
+	m_hwnd = ::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"MyWindowClass", L"DirectX Application", 
+		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 
+		1024, 768, NULL, NULL, NULL, NULL);
+
 	//If window creation failed return false
 	if (!m_hwnd)
-		return false;
+		throw std::exception("Window not created successfully");
 
 	//Show up window
 	::ShowWindow(m_hwnd, SW_SHOW);
@@ -87,12 +86,18 @@ bool Window::init()
 
 	//Set bool to true when window is running
 	m_is_run = true;
-	return true;
 }
 
 bool Window::broadcast()
 {
 	MSG msg;
+
+	if (!this->m_is_init)
+	{
+		SetWindowLongPtr(m_hwnd, GWLP_USERDATA, (LONG_PTR)this);
+		this->onCreate();
+		this->m_is_init = true;
+	}
 
 	this->onUpdate();
 
@@ -102,23 +107,15 @@ bool Window::broadcast()
 		DispatchMessage(&msg);
 	}
 
-
 	Sleep(1);
-	
-	return true;
-}
-
-bool Window::release()
-{
-	//Znicit okno
-	if (!::DestroyWindow(m_hwnd))
-		return false;
 	
 	return true;
 }
 
 bool Window::isRun()
 {
+	if(m_is_run)
+		broadcast();
 	return m_is_run;
 }
 
@@ -127,11 +124,6 @@ RECT Window::getClientWindowRect()
 	RECT rc;
 	::GetClientRect(this->m_hwnd, &rc);
 	return rc;
-}
-
-void Window::setHWND(HWND hwnd)
-{
-	this->m_hwnd = hwnd;
 }
 
 void Window::onCreate()
@@ -153,4 +145,11 @@ void Window::onFocus()
 
 void Window::onKillFocus()
 {
+}
+
+Window::~Window()
+{
+	//Znicit okno
+	if (!::DestroyWindow(m_hwnd))
+		throw std::exception("Window not destroyed successfully");
 }
