@@ -183,7 +183,7 @@ void AppWindow::onUpdate()
 
 	//Clear render target
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
-		0, 0.3f, 0.4f, 1);
+		0, 0, 0, 1);
 
 	//Nastavit viewport na render target funkcie draw
 	RECT rc = this->getClientWindowRect();
