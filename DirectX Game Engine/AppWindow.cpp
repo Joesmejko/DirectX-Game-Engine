@@ -1,6 +1,7 @@
 #include "AppWindow.h"
 #include <windows.h>
 #include "Vector3D.h"
+#include "Vector2D.h"
 #include "Matrix4x4.h"
 #include "InputSystem.h"
 
@@ -12,8 +13,7 @@ struct vec3
 struct vertex
 {
 	Vector3D position;
-	Vector3D color;
-	Vector3D color1;
+	Vector2D texcoord;
 };
 
 __declspec(align(16))
@@ -105,25 +105,82 @@ void AppWindow::onCreate()
 
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
+
+	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//wood.jpg");
+
+
+
+
 	RECT rc = this->getClientWindowRect();
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 
+	Vector3D position_list[] =
+	{
+		//X Y Z
+		//Front face
+		{Vector3D(-0.5f, -0.5f, -0.5f)},//POS1
+		{Vector3D(-0.5f, 0.5f, -0.5f)},//POS2
+		{Vector3D(0.5f, 0.5f, -0.5f)},//POS3
+		{Vector3D(0.5f, -0.5f, -0.5f)},//POS4
+
+		//Back face
+		{Vector3D(0.5f, -0.5f, 0.5f)},//POS1
+		{Vector3D(0.5f, 0.5f, 0.5f)},//POS2
+		{Vector3D(-0.5f, 0.5f, 0.5f)},//POS3
+		{Vector3D(-0.5f, -0.5f, 0.5f)},//POS4
+	};
+
+	Vector2D texcoord_list[] =
+	{
+		//X Y Z
+		//Front face
+		{Vector2D(0.0f,0.0f)},//POS1
+		{Vector2D(0.0f,1.0f)},//POS2
+		{Vector2D(1.0f,0.0f)},//POS3
+		{Vector2D(1.0f,1.0f)},//POS4
+	};
+
+
+
+
+
 	vertex vertex_list[] =
 	{
 		//X Y Z
 		//Front face
-		{Vector3D(-0.5f, -0.5f, -0.5f),		Vector3D(1,0,0),	Vector3D(1,0,0)},//POS1
-		{Vector3D(-0.5f, 0.5f, -0.5f),		Vector3D(0,1,0),	Vector3D(0.1,0.8,0.6)},//POS2
-		{Vector3D(0.5f, 0.5f, -0.5f),		Vector3D(0,0,1),	Vector3D(1,0.6,0.8)},//POS3
-		{Vector3D(0.5f, -0.5f, -0.5f),		Vector3D(1,1,0),	Vector3D(0,0.2,0.3)},//POS4
+		{position_list[0],texcoord_list[1]},
+		{position_list[1],texcoord_list[0]},
+		{position_list[2],texcoord_list[2]},
+		{position_list[3],texcoord_list[3]},
 
 		//Back face
-		{Vector3D(0.5f, -0.5f, 0.5f),		Vector3D(1,0,0),	Vector3D(1,0,0)},//POS1
-		{Vector3D(0.5f, 0.5f, 0.5f),		Vector3D(0,1,0),	Vector3D(0.1,0.8,0.6)},//POS2
-		{Vector3D(-0.5f, 0.5f, 0.5f),		Vector3D(0,0,1),	Vector3D(1,0.6,0.8)},//POS3
-		{Vector3D(-0.5f, -0.5f, 0.5f),		Vector3D(1,1,0),	Vector3D(0,0.2,0.3)},//POS4
+		{position_list[4],texcoord_list[1]},
+		{position_list[5],texcoord_list[0]},
+		{position_list[6],texcoord_list[2]},
+		{position_list[7],texcoord_list[3]},
+
+		{position_list[1],texcoord_list[1]},
+		{position_list[6],texcoord_list[0]},
+		{position_list[5],texcoord_list[2]},
+		{position_list[2],texcoord_list[3]},
+
+		{position_list[7],texcoord_list[1]},
+		{position_list[0],texcoord_list[0]},
+		{position_list[3],texcoord_list[2]},
+		{position_list[4],texcoord_list[3]},
+
+		{position_list[3],texcoord_list[1]},
+		{position_list[2],texcoord_list[0]},
+		{position_list[5],texcoord_list[2]},
+		{position_list[4],texcoord_list[3]},
+
+		{position_list[7],texcoord_list[1]},
+		{position_list[6],texcoord_list[0]},
+		{position_list[1],texcoord_list[2]},
+		{position_list[0],texcoord_list[3]},
+
 	};
 
 	
@@ -139,17 +196,17 @@ void AppWindow::onCreate()
 		4,5,6,
 		6,7,4,
 		//Top side
-		1,6,5,
-		5,2,1,
+		8,9,10,
+		10,11,8,
 		//Bottom side
-		7,0,3,
-		3,4,7,
+		12,13,14,
+		14,15,12,
 		//Right side
-		3,2,5,
-		5,4,3,
+		16,17,18,
+		18,19,16,
 		//Left side
-		7,6,1,
-		1,0,7
+		20,21,22,
+		22,23,20
 	};
 
 	UINT size_index_list = ARRAYSIZE(index_list);
@@ -199,6 +256,8 @@ void AppWindow::onUpdate()
 	//Set shaders for draw function
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexShader(m_vs);
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setPixelShader(m_ps);
+
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setTexture(m_ps, m_wood_tex);
 	//Set the verticies to draw
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexBuffer(m_vb);
 	//Set the indices to draw
@@ -234,25 +293,25 @@ void AppWindow::onKeyDown(int key)
 	if (key == 'W')
 	{
 		//m_rot_x += 0.707f * m_delta_time;
-		m_forward = 1.0f;
+		m_forward = 0.1f;
 	}
 
 	else if (key == 'S')
 	{
 		//m_rot_x -= 0.707f * m_delta_time;
-		m_forward = -1.0f;
+		m_forward = -0.1f;
 	}
 
 	else if (key == 'A')
 	{
 		//m_rot_y += 0.707f * m_delta_time;
-		m_rightward = -1.0f;
+		m_rightward = -0.1f;
 	}
 
 	else if (key == 'D')
 	{
 		//m_rot_y -= 0.707f * m_delta_time;
-		m_rightward = 1.0f;
+		m_rightward = 0.1f;
 	}
 }
 
