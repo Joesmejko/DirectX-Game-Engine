@@ -23,19 +23,28 @@ struct constant
 	Matrix4x4 m_world;
 	Matrix4x4 m_view;
 	Matrix4x4 m_proj;
-	unsigned int m_time;
+	Vector4D m_light_direction;
+	Vector4D m_camera_position;
 };
 
 void AppWindow::update()
 {
 	constant cc;
-	cc.m_time = ::GetTickCount64();
+
 	m_delta_pos += m_delta_time / 10.0f;
 
 	if (m_delta_pos > 1.0f)
 		m_delta_pos = 0;
 
 	Matrix4x4 temp;
+	Matrix4x4 m_light_rot_matrix;
+	m_light_rot_matrix.setIdentity();
+	m_light_rot_matrix.setRotationY(m_light_rot_y);
+
+	m_light_rot_y += 0.707 * m_delta_time;
+
+	cc.m_light_direction = m_light_rot_matrix.getZdirection();
+
 
 	m_delta_scale += m_delta_time / 0.55f;
 
@@ -77,6 +86,8 @@ void AppWindow::update()
 
 	world_cam.setTranslation(new_pos);
 
+	cc.m_camera_position = new_pos;
+
 	m_world_cam = world_cam;
 
 	world_cam.inverse();
@@ -109,7 +120,7 @@ void AppWindow::onCreate()
 
 	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//forg.jpg");
 
-	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\teapot.obj");
+	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\statue.obj");
 
 
 	RECT rc = this->getClientWindowRect();
@@ -130,10 +141,7 @@ void AppWindow::onCreate()
 	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"PixelShader.hlsl", "psmain", &shader_byte_code, &size_shader);
 	m_ps = GraphicsEngine::get()->getRenderSystem()->createPixelShader(shader_byte_code, size_shader);
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
-
 	constant cc;
-	cc.m_time = 0;
-
 	m_cb = GraphicsEngine::get()->getRenderSystem()->createConstantBuffer(&cc, sizeof(constant));
 }
 
