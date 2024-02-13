@@ -9,13 +9,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
 	case WM_CREATE:
 	{
-		//Event when window is created
+		break;
+	}
+
+	case WM_SIZE:
+	{
+		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		if (window) window->onSize();
 		break;
 	}
 
 	case WM_SETFOCUS:
 	{
-		// Event when the window gets focus
 		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		if (window) window->onFocus();
 		break;
@@ -23,7 +28,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 	case WM_KILLFOCUS:
 	{
-		//Event when window is in out of focus
 		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		window->onKillFocus();
 		break;
@@ -31,7 +35,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 	case WM_DESTROY:
 	{
-		//Event when window is destroyed
 		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 		window->onDestroy();
 		::PostQuitMessage(0);
@@ -40,12 +43,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 	default:
 		return::DefWindowProc(hwnd, msg, wparam, lparam);
-
-
 	}
 
 	return NULL;
-
 }
 
 Window::Window()
@@ -76,15 +76,12 @@ Window::Window()
 		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 
 		1024, 768, NULL, NULL, NULL, NULL);
 
-	//If window creation failed return false
 	if (!m_hwnd)
 		throw std::exception("Window not created successfully");
 
-	//Show up window
 	::ShowWindow(m_hwnd, SW_SHOW);
 	::UpdateWindow(m_hwnd);
 
-	//Set bool to true when window is running
 	m_is_run = true;
 }
 
@@ -126,6 +123,15 @@ RECT Window::getClientWindowRect()
 	return rc;
 }
 
+RECT Window::getSizeScreen()
+{
+	::SetProcessDPIAware;
+	RECT rc;
+	rc.right = ::GetSystemMetrics(SM_CXSCREEN);
+	rc.bottom = ::GetSystemMetrics(SM_CYSCREEN);
+	return rc;
+}
+
 void Window::onCreate()
 {
 }
@@ -140,6 +146,10 @@ void Window::onDestroy()
 }
 
 void Window::onFocus()
+{
+}
+
+void Window::onSize()
 {
 }
 

@@ -7,9 +7,12 @@ class SwapChain
 {
 public:
 	SwapChain(HWND hwnd, UINT width, UINT height, RenderSystem* system);
-	//Initialize SwapChain for window
+	void setFullScreen(bool fullscreen, unsigned int width, unsigned int height);
+	void resize(unsigned int width, unsigned int height);
 	bool present(bool vsync);
 	~SwapChain();
+private:
+	void reloadBuffers(unsigned int width, unsigned int height);
 private:
 	IDXGISwapChain* m_swap_chain = nullptr;
 	ID3D11RenderTargetView* m_rtv = nullptr;

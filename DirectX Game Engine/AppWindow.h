@@ -15,7 +15,6 @@ class AppWindow : public Window, public InputListener
 {
 public:
 
-	void update();
 
 	// Inherited via Window
 	virtual void onCreate() override;
@@ -23,6 +22,7 @@ public:
 	virtual void onDestroy() override;
 	virtual void onFocus() override;
 	virtual void onKillFocus() override;
+	virtual void onSize() override;
 	
 	// Inherit via input listener
 	virtual void onKeyDown(int key) override;
@@ -36,6 +36,8 @@ public:
 	virtual void onRightMouseDown(const Point& mouse_pos) override;
 	virtual void onRightMouseUp(const Point& mouse_pos) override;
 public:
+	void update();
+	void render();
 	void updateModel();
 	void updateCamera();
 	void updateSkyBox();
@@ -75,4 +77,7 @@ private:
 	Matrix4x4 m_world_cam;
 	Matrix4x4 m_view_cam;
 	Matrix4x4 m_proj_cam;
+
+	bool m_play_state = false;
+	bool m_fullscreen_state = false;
 };
