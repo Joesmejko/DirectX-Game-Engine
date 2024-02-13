@@ -41,6 +41,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		break;
 	}
 
+	case WM_GETMINMAXINFO:
+
+	{
+		LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
+
+		minmax->ptMinTrackSize.x = 1;
+		minmax->ptMinTrackSize.y = 1;
+
+		break;
+	}
+
 	default:
 		return::DefWindowProc(hwnd, msg, wparam, lparam);
 	}
@@ -125,7 +136,6 @@ RECT Window::getClientWindowRect()
 
 RECT Window::getSizeScreen()
 {
-	::SetProcessDPIAware;
 	RECT rc;
 	rc.right = ::GetSystemMetrics(SM_CXSCREEN);
 	rc.bottom = ::GetSystemMetrics(SM_CYSCREEN);
