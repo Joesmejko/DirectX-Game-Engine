@@ -52,6 +52,12 @@
     <Filter Include="GameEngine\GraphicsEngine\ResourceManager\MeshManager">
       <UniqueIdentifier>{489f26b7-260d-4b93-a452-051dae461328}</UniqueIdentifier>
     </Filter>
+    <Filter Include="App\Shaders">
+      <UniqueIdentifier>{796bc4c8-5eb7-47de-9b69-0bf4dfa94228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App\Shaders\PointLightShader">
+      <UniqueIdentifier>{03372f1b-1bc7-4a20-a138-1f319e85e9bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -193,17 +199,23 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="VertexShader.hlsl">
-      <Filter>App</Filter>
-    </FxCompile>
-    <FxCompile Include="PixelShader.hlsl">
-      <Filter>App</Filter>
-    </FxCompile>
     <FxCompile Include="VertexMeshLayoutShader.hlsl">
       <Filter>GameEngine\GraphicsEngine</Filter>
     </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>App\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>App\Shaders</Filter>
+    </FxCompile>
     <FxCompile Include="SkyBoxShader.hlsl">
-      <Filter>App</Filter>
+      <Filter>App\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="PointLightVertexShader.hlsl">
+      <Filter>App\Shaders\PointLightShader</Filter>
+    </FxCompile>
+    <FxCompile Include="PointLightPixelShader.hlsl">
+      <Filter>App\Shaders\PointLightShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

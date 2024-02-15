@@ -25,6 +25,9 @@ struct constant
 	Matrix4x4 m_proj;
 	Vector4D m_light_direction;
 	Vector4D m_camera_position;
+	Vector4D m_light_position = Vector4D(0,1,0,0);
+	float m_light_radius = 2.0f;
+	float m_time = 0.0f;
 };
 
 void AppWindow::update()
@@ -70,10 +73,11 @@ void AppWindow::updateModel()
 	m_light_rot_matrix.setRotationY(m_light_rot_y);
 	m_light_rot_y += 0.707 * m_delta_time;
 	cc.m_world.setIdentity();
-	cc.m_world.setScale(Vector3D(0.01f, 0.01f, 0.01f));
 	cc.m_view = m_view_cam;
 	cc.m_proj = m_proj_cam;
 	cc.m_camera_position = m_world_cam.getTranslation();
+	float dist_from_origin = 1.0f;
+	cc.m_light_position = Vector4D(cos(m_light_rot_y)*dist_from_origin,1.0f, sin(m_light_rot_y) * dist_from_origin,1.0f);
 	cc.m_light_direction = m_light_rot_matrix.getZdirection();
 
 	m_cb->update(GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext(), &cc);
@@ -138,14 +142,9 @@ void AppWindow::drawMesh(const MeshPtr& mesh, const VertexShaderPtr& vs, const P
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexBuffer(mesh->getVertexBuffer());
 	//Set the indices to draw
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setIndexBuffer(mesh->getIndexBuffer());
-
 	//Draw
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->drawIndexedTriangleList(mesh->getIndexBuffer()->getSizeIndexList(), 0, 0);
 }
-
-
-
-
 
 void AppWindow::onCreate()
 {
@@ -157,10 +156,10 @@ void AppWindow::onCreate()
 	m_play_state = true;
 	InputSystem::get()->showCursor(false);
 
-	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//manh.jpg");
-	m_sky_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//sky.jpg");
+	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//wall.jpg");
+	m_sky_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//stars_map.jpg");
 
-	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\manhattan.obj");
+	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\scene.obj");
 	m_sky_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 
 
@@ -172,14 +171,14 @@ void AppWindow::onCreate()
 	void* shader_byte_code = nullptr;
 
 	size_t size_shader = 0;
-	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"VertexShader.hlsl","vsmain", &shader_byte_code, &size_shader);
+	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"PointLightVertexShader.hlsl","vsmain", &shader_byte_code, &size_shader);
 
 	m_vs = GraphicsEngine::get()->getRenderSystem()->createVertexShader(shader_byte_code, size_shader);
 
 
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
-	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"PixelShader.hlsl", "psmain", &shader_byte_code, &size_shader);
+	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"PointLightPixelShader.hlsl", "psmain", &shader_byte_code, &size_shader);
 	m_ps = GraphicsEngine::get()->getRenderSystem()->createPixelShader(shader_byte_code, size_shader);
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
@@ -259,6 +258,7 @@ void AppWindow::onKeyUp(int key)
 		m_play_state = (m_play_state) ? false : true;
 		InputSystem::get()->showCursor(!m_play_state);
 	}
+
 
 	else if (key == 'F')
 	{

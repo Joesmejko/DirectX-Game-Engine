@@ -95,5 +95,3 @@ DeviceContext::~DeviceContext()
 {
 	m_device_context->Release();
 }
-
-//Part 15, 17:53
