@@ -156,10 +156,10 @@ void AppWindow::onCreate()
 	m_play_state = true;
 	InputSystem::get()->showCursor(false);
 
-	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//wall.jpg");
-	m_sky_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//stars_map.jpg");
+	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//sukoj.png");
+	m_sky_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//sky.jpg");
 
-	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\scene.obj");
+	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sukoj.obj");
 	m_sky_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 
 
@@ -171,14 +171,16 @@ void AppWindow::onCreate()
 	void* shader_byte_code = nullptr;
 
 	size_t size_shader = 0;
-	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"PointLightVertexShader.hlsl","vsmain", &shader_byte_code, &size_shader);
+	//GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"PointLightVertexShader.hlsl","vsmain", &shader_byte_code, &size_shader);
+	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
 
 	m_vs = GraphicsEngine::get()->getRenderSystem()->createVertexShader(shader_byte_code, size_shader);
 
 
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
-	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"PointLightPixelShader.hlsl", "psmain", &shader_byte_code, &size_shader);
+	//GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"PointLightPixelShader.hlsl", "psmain", &shader_byte_code, &size_shader);
+	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"PixelShader.hlsl", "psmain", &shader_byte_code, &size_shader);
 	m_ps = GraphicsEngine::get()->getRenderSystem()->createPixelShader(shader_byte_code, size_shader);
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
@@ -229,22 +231,22 @@ void AppWindow::onKeyDown(int key)
 	if (key == 'W')
 	{
 		//m_rot_x += 0.707f * m_delta_time;
-		m_forward = 0.1f;
+		m_forward = 0.5f;
 	}
 
 	else if (key == 'S')
 	{
-		m_forward = -0.1f;
+		m_forward = -0.5f;
 	}
 
 	else if (key == 'A')
 	{
-		m_rightward = -0.1f;
+		m_rightward = -0.5f;
 	}
 
 	else if (key == 'D')
 	{
-		m_rightward = 0.1f;
+		m_rightward = 0.5f;
 	}
 }
 
