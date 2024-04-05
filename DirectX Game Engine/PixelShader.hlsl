@@ -20,7 +20,7 @@ cbuffer constant: register(b0)
 float4 psmain(PS_INPUT input) : SV_TARGET
 {
 	//Ambient light
-	float ka = 0.6;
+	float ka = 0.7;
 	float3 ia = float3(1.0, 1.0, 1.0);
 
 	float3 ambient_light = ka * ia;
@@ -36,13 +36,13 @@ float4 psmain(PS_INPUT input) : SV_TARGET
 	float ks = 1.0;
 	float3 is = float3(1.0, 1.0, 1.0);
 	float3 reflected_light = reflect(m_light_direction.xyz, input.normal);
-	float shininess = 100.0;
+	float shininess = 5.0;
 	float amount_specular_light = pow(max(0.0, dot(reflected_light, input.direction_to_camera)), shininess);
 
 	float3 specular_light = ks * amount_specular_light * is;
 	//ambient svetlo + difuzne + odlesk
 	float3 final_light = ambient_light + diffuse_light + specular_light;
 	return (Texture.Sample(TextureSampler, float2(input.texcoord.x, input.texcoord.y)) * float4(final_light, 1.0));
-
+	//return (Texture.Sample(TextureSampler, float2(input.texcoord.x, input.texcoord.y)));
 	//return float4(final_light, 1.0);
 }

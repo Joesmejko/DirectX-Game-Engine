@@ -52,7 +52,7 @@ private:
 	ConstantBufferPtr m_cb;
 	ConstantBufferPtr m_sky_cb;
 	IndexBufferPtr m_ib;
-	TexturePtr m_wood_tex;
+	TexturePtr m_tex;
 	TexturePtr m_sky_tex;
 	MeshPtr m_mesh;
 	MeshPtr m_sky_mesh;

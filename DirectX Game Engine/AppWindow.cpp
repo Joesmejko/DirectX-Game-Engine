@@ -26,7 +26,7 @@ struct constant
 	Vector4D m_light_direction;
 	Vector4D m_camera_position;
 	Vector4D m_light_position = Vector4D(0,1,0,0);
-	float m_light_radius = 2.0f;
+	float m_light_radius = 4.0f;
 	float m_time = 0.0f;
 };
 
@@ -51,7 +51,7 @@ void AppWindow::render()
 
 	//Render 3D Model
 	GraphicsEngine::get()->getRenderSystem()->setRasterizerState(false);
-	drawMesh(m_mesh, m_vs, m_ps, m_cb, m_wood_tex);
+	drawMesh(m_mesh, m_vs, m_ps, m_cb, m_tex);
 	//Render skybox
 	GraphicsEngine::get()->getRenderSystem()->setRasterizerState(true);
 	drawMesh(m_sky_mesh, m_vs, m_sky_ps, m_sky_cb, m_sky_tex);
@@ -112,7 +112,7 @@ void AppWindow::updateCamera()
 	int width = (this->getClientWindowRect().right - this->getClientWindowRect().left);
 	int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top);
 
-	m_proj_cam.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.0f);
+	m_proj_cam.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.01f, 100.0f);
 }
 
 void AppWindow::updateSkyBox()
@@ -156,7 +156,7 @@ void AppWindow::onCreate()
 	m_play_state = true;
 	InputSystem::get()->showCursor(false);
 
-	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//sukoj.png");
+	m_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//sukoj.png");
 	m_sky_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets//textures//sky.jpg");
 
 	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sukoj.obj");
@@ -230,7 +230,6 @@ void AppWindow::onKeyDown(int key)
 {
 	if (key == 'W')
 	{
-		//m_rot_x += 0.707f * m_delta_time;
 		m_forward = 0.5f;
 	}
 
